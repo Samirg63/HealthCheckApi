@@ -16,7 +16,7 @@ export function auth(
     }
 
     try {
-        jwt.verify(token.split(' ')[1],process.env.JWT_SECRET as string)
+        jwt.verify(token.split(' ')[1]!,process.env.JWT_SECRET as string)
         next()
     } catch (error) {
         return next(new UnauthorizedError(req.originalUrl))

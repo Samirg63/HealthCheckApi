@@ -1,4 +1,3 @@
-import { NotFound } from '../errors/NotFoundError';
 import {ConflictError} from '../errors/ConflictError'
 import type {IAuth} from '../types/Auth'
 import bcrypt from 'bcrypt'

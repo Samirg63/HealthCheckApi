@@ -1,4 +1,4 @@
-import {IError} from './Error'
+import type {IError} from './Error'
 
 export interface IResult<T>{
     status:number,

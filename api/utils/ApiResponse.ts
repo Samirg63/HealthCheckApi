@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { IResult } from "../types/Result";
+import type { Response } from "express";
+import type { IResult } from "../types/Result";
 
 export class ApiResponse{
 
