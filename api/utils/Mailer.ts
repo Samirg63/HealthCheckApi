@@ -1,0 +1,30 @@
+import nodemailer from 'nodemailer'
+import dotenv from 'dotenv'
+import { InternalServerError } from '../errors/InternalServerError';
+
+
+dotenv.config()
+
+
+    const mailer = nodemailer.createTransport({
+        host:"smtp.gmail.com",
+        port:587,
+        secure:false,
+        auth:{
+            user:process.env.MAIL_USER,
+            pass:process.env.MAIL_PASS
+        }
+    })
+
+    
+    export async function verifyMailer(){
+        try{
+            await mailer.verify();
+            console.log('Mailer is working')
+        }catch(e){
+            throw new InternalServerError('Mailer service');
+        }
+
+    }
+
+export {mailer};
