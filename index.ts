@@ -2,12 +2,12 @@ import express,{Express, Request, Response} from 'express'
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv'
-import { connect } from './src/db/connection';
-import SitesRoute from './src/routes/Sites.route';
-import AuthRoute from './src/routes/Auth.route';
-import MailRoute from './src/routes/Mail.route'
-import { errorHandler } from './src/middlewares/ErrorHandler.middleware';
-import { verifyMailer } from './src/utils/Mailer';
+import { connect } from './api/db/connection';
+import SitesRoute from './api/routes/Sites.route';
+import AuthRoute from './api/routes/Auth.route';
+import MailRoute from './api/routes/Mail.route'
+import { errorHandler } from './api/middlewares/ErrorHandler.middleware';
+import { verifyMailer } from './api/utils/Mailer';
 
 dotenv.config()
 
