@@ -22,6 +22,7 @@ dotenv.config()
             await mailer.verify();
             console.log('Mailer is working')
         }catch(e){
+            console.error(e)
             throw new InternalServerError('Mailer service');
         }
 
