@@ -43,7 +43,7 @@
     "allowJs": true
   },
   "include": [
-    "api/**/*.ts","api/**/*.tsx"
+    "src/**/*.ts","src/**/*.tsx"
   ]
 
 }
