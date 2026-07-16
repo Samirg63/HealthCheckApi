@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import { InternalServerError } from '../errors/InternalServerError';
+import dns from "node:dns";
 
 
 dotenv.config()
@@ -13,6 +14,12 @@ dotenv.config()
         auth:{
             user:process.env.MAIL_USER,
             pass:process.env.MAIL_PASS
+        },
+        tls:{
+            servername:"smtp.gmail.com"
+        },
+        lookup(hostname,options,callback){
+            return dns.lookup(hostname,{family:4},callback)
         }
     })
 
