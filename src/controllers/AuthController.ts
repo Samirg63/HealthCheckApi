@@ -8,6 +8,10 @@ import { UnauthorizedError } from "../errors/UnauthorizedError";
 
 export default class AuthController{
 
+    check(req:Request,res:Response,next:NextFunction){
+        ApiResponse.success(res,200)
+    }
+
     async register(req:Request,res:Response,next:NextFunction){
         try {
             const data:IAuth = req.body
