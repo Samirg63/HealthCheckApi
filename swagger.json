@@ -1,0 +1,777 @@
+{
+    "openapi":"3.1.0",
+    "info":{
+        "title":"HealthCheck API",
+        "description":"API utilizada para administrar o site HealthCheck",
+        "contact":{
+            "email":"samir-gomes13@hotmail.com", 
+            "name":"Samir Gomes"
+        },
+        "version":"1.0"
+    },
+    "servers":[
+        {
+            "url":"https:healthcheckapi-production.up.railway.app"
+        }
+    ],
+    "paths":{
+        "/mail":{
+            "get":{
+                "tags":["Mail"],
+                "summary":"Verifica se a rota de e-mail está disponível",
+                "description":"Endpoint utilizado para verificar se o serviço de e-mail está funcionando corretamente.",
+                "responses":{
+                    "200":{
+                        "description":"Serviço disponivel.",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "status":{
+                                            "type":"integer",
+                                            "example":200
+                                        },
+                                        "success":{
+                                           "type":"boolean",
+                                            "example":true 
+                                        },
+                                        "errors":{
+                                            "type":"array",
+                                            "items":{
+                                                "type":"string",
+                                                "example":[]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+      "tags": [
+        "Mail"
+      ],
+      "summary": "Envia relatório de diagnóstico por e-mail",
+      "description": "Recebe um objeto contendo o diagnóstico de um ou mais sites e envia um e-mail contendo apenas os sites que apresentaram falhas.\n",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/SiteDiagnostic"
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "E-mail enviado com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "integer",
+                    "example": 200
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Erro interno do servidor.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "integer",
+                    "example": 500
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "Internal server error"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+            }
+        },
+        "/auth": {
+    "get": {
+      "tags": [
+        "Authentication"
+      ],
+      "summary": "Verifica se a rota de autenticação está disponível",
+      "description": "Endpoint utilizado para verificar se o serviço de autenticação está funcionando.",
+      "responses": {
+        "200": {
+          "description": "Serviço disponível.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuccessResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/auth/register": {
+    "post": {
+      "tags": [
+        "Authentication"
+      ],
+      "summary": "Registrar usuário",
+      "description": "Cria um novo usuário e retorna um token JWT.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AuthRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Usuário registrado com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/TokenResponse"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Corpo da requisição inválido."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  },
+  "/auth/login": {
+    "post": {
+      "tags": [
+        "Authentication"
+      ],
+      "summary": "Realizar login",
+      "description": "Autentica um usuário e retorna um token JWT.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AuthRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Login realizado com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/TokenResponse"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Credenciais inválidas."
+        },
+        "422": {
+          "description": "Corpo da requisição inválido."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  },
+  "/auth/verify": {
+    "post": {
+      "tags": [
+        "Authentication"
+      ],
+      "summary": "Verificar token JWT",
+      "description": "Valida o token JWT enviado no cabeçalho Authorization.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Token válido.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuccessResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Token inválido ou expirado."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  },
+  "/sites": {
+    "post": {
+      "tags": [
+        "Sites"
+      ],
+      "summary": "Registrar site",
+      "description": "Adiciona um novo site à lista de monitoramento.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SiteRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Site cadastrado com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/Site"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Corpo da requisição inválido."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    },
+    "get": {
+      "tags": [
+        "Sites"
+      ],
+      "summary": "Listar sites",
+      "description": "Retorna todos os sites cadastrados ou filtra por nome ou URL utilizando parâmetros de consulta.\n",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "in": "query",
+          "name": "name",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Nome do site."
+        },
+        {
+          "in": "query",
+          "name": "url",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "URL do endpoint de health do site."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Lista de sites.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Site"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Nenhum site encontrado."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  },
+  "/sites/health": {
+    "get": {
+      "tags": [
+        "Sites"
+      ],
+      "summary": "Diagnóstico dos sites",
+      "description": "Executa a verificação de todos os sites cadastrados.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Diagnóstico concluído.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SiteHealth"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  },
+  "/sites/{id}": {
+    "delete": {
+      "tags": [
+        "Sites"
+      ],
+      "summary": "Remover site",
+      "description": "Remove um site pelo seu identificador.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SiteId"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Site removido.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/DeleteResult"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Site não encontrado."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    },
+    "put": {
+      "tags": [
+        "Sites"
+      ],
+      "summary": "Atualizar site",
+      "description": "Atualiza as informações de um site.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/SiteId"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SiteUpdateRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Site atualizado.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SuccessResponse"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/Site"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Site não encontrado."
+        },
+        "500": {
+          "description": "Erro interno do servidor."
+        }
+      }
+    }
+  }
+    },
+    "components":{
+        "parameters":{
+            "SiteId":{
+                "in":"path",
+                "name":"id",
+                "required":true,
+                "description":"Identificador do Site.",
+                "schema":{
+                    "type":"string"
+                }
+            }
+        },
+        "schemas":{
+            "AuthRequest":{
+                "type":"object",
+                "properties":{
+                    "email":{
+                        "type":"string",
+                        "format":"email",
+                        "example":"user@email.com"
+                    },
+                    "password":{
+                        "type":"string",
+                        "format":"password",
+                        "example":"MinhaSenha123"
+                    }
+                },
+                "required":["email","password"]
+            },
+            "SiteUpdateRequest": {
+                "type": "object",
+                "description": "Informe apenas os campos que deseja alterar.",
+                "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri"
+                }
+                }
+            },
+            "Site": {
+                "type": "object",
+                "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "__v": {
+                    "type": "integer"
+                }
+                }
+            },
+            "DeleteResult": {
+                "type": "object",
+                "properties": {
+                "acknowledged": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "deletedCount": {
+                    "type": "integer",
+                    "example": 1
+                }
+                }
+            },
+            "SiteHealth": {
+                "type": "object",
+                "properties": {
+                "backend": {
+                    "nullable": true,
+                    "type": "object",
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "frontend": {
+                    "type": "object",
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "database": {
+                    "nullable": true,
+                    "type": "object",
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "apis": {
+                    "nullable": true,
+                    "type": "array",
+                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "error": {
+                            "type": "array",
+                            "items": {
+                            "type": "string"
+                            }
+                        }
+                        }
+                    }
+                    }
+                },
+                "url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+                }
+            },
+            "TokenResponse": {
+                "type": "object",
+                "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "JWT utilizado para autenticação.",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+                }
+            },
+            "SiteDiagnostic": {
+                "type": "object",
+                "properties": {
+                "backend": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "frontend": {
+                    "type": "object",
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "database": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                    }
+                },
+                "apis": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                        "success": {
+                            "type": "boolean"
+                        }
+                        }
+                    }
+                    }
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://meusite.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "6871f2d3a8b5c0e11b6b9f12"
+                }
+                }
+            },
+             "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                "status": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                    "type": "string"
+                    },
+                    "example": []
+                }
+                },
+                "required": [
+                "status",
+                "success",
+                "errors"
+                ]
+            }
+        }
+    }
+}

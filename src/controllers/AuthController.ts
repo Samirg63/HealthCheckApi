@@ -34,7 +34,7 @@ export default class AuthController{
             }
 
             const loginToken = await AuthService.login(data)
-            ApiResponse.success(res,201,{token:loginToken})
+            ApiResponse.success(res,200,{token:loginToken})
         } catch (error) {
             next(error)
         }

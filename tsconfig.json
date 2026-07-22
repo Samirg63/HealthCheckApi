@@ -40,10 +40,12 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": [
-    "src/**/*.ts","src/**/*.tsx"
+    "src/**/*.ts","src/**/*.tsx","*.json"
   ]
+  
 
 }

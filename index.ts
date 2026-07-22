@@ -9,6 +9,8 @@ import AuthRoute from './src/routes/Auth.route';
 import MailRoute from './src/routes/Mail.route'
 import { errorHandler } from './src/middlewares/ErrorHandler.middleware';
 import { verifyMailer } from './src/utils/Mailer';
+import SwaggerDocs from './swagger.json'
+import swaggerUi from 'swagger-ui-express'
 
 dotenv.config()
 
@@ -24,11 +26,12 @@ async function Main(){
     
     //db
     await connect();
-
+    
     //Mailer
     await verifyMailer();
     
     //Routes
+    app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(SwaggerDocs))
     app.use("/sites",SitesRoute)
     app.use('/auth',AuthRoute)
     app.use('/mail',MailRoute)

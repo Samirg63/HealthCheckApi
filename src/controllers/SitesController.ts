@@ -9,10 +9,6 @@ import type { IHealthResponse } from '../types/health';
 
 export default class SitesController{
     
-    check(req:Request,res:Response,next:NextFunction){
-        ApiResponse.success(res,200)
-    }
-
     async create(req:Request,res:Response,next:NextFunction){
         try {
             const response:ISite = await SiteService.create(req.body as ISite);
@@ -31,7 +27,6 @@ export default class SitesController{
             }else{
                 response = await SiteService.getAll();
             }
-            
             return ApiResponse.success(res,200,response);
             
         } catch (error) {

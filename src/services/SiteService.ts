@@ -24,6 +24,7 @@ export default class SiteService{
     }
 
     static async getAll():Promise<ISite[]>{
+        console.log('all')
         try {
             return await SiteModel.find();
         } catch (error) {

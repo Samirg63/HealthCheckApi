@@ -6,7 +6,7 @@ import { auth } from "../middlewares/auth.middleware";
 const SitesRoute:Router = Router();
 const controller = new SitesController();
 
-SitesRoute.get('/',controller.check)
+
 SitesRoute.use(auth);
 SitesRoute.post('/',controller.create)
 SitesRoute.get('/',controller.get)
